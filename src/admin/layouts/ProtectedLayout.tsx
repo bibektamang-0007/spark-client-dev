@@ -11,11 +11,11 @@ export const ProtectedLayout: React.FC<ProtectedLayoutProps> = ({
   allowedRoles,
 }) => {
   const isLoading = false;
-  const accessToken = null;
+  // const accessToken = null;
   const user = {
     role: "super_admin" as UserRole,
   };
-  const location = useLocation();
+  // const location = useLocation();
 
   if (isLoading)
     return (
