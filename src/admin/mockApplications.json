@@ -1,0 +1,98 @@
+[
+  {
+    "id": "APP-1001",
+    "name": "EcoCharge Tech",
+    "type": "Startup",
+    "date": "Aug 25, 2026",
+    "status": "Pending",
+    "email": "founder@ecocharge.in"
+  },
+  {
+    "id": "APP-1002",
+    "name": "Dr. Sarah Jenkins",
+    "type": "Mentor",
+    "date": "Aug 24, 2026",
+    "status": "Approved",
+    "email": "sarah.j@university.edu"
+  },
+  {
+    "id": "APP-1003",
+    "name": "Global Ventures LLC",
+    "type": "Enterprise",
+    "date": "Aug 24, 2026",
+    "status": "Approved",
+    "email": "partners@globalventures.com"
+  },
+  {
+    "id": "APP-1004",
+    "name": "Arjun Patel",
+    "type": "Aspirant",
+    "date": "Aug 23, 2026",
+    "status": "Under Review",
+    "email": "arjun.p99@gmail.com"
+  },
+  {
+    "id": "APP-1005",
+    "name": "Nexus Dynamics",
+    "type": "Startup",
+    "date": "Aug 23, 2026",
+    "status": "Rejected",
+    "email": "hello@nexusdynamics.io"
+  },
+  {
+    "id": "APP-1006",
+    "name": "GreenLife Agritech",
+    "type": "Startup",
+    "date": "Aug 21, 2026",
+    "status": "Pending",
+    "email": "contact@greenlife.in"
+  },
+  {
+    "id": "APP-1007",
+    "name": "Tashi Bhutia",
+    "type": "Aspirant",
+    "date": "Aug 20, 2026",
+    "status": "Approved",
+    "email": "tashi.b@gmail.com"
+  },
+  {
+    "id": "APP-1008",
+    "name": "Peak Incubation",
+    "type": "Enterprise",
+    "date": "Aug 19, 2026",
+    "status": "Under Review",
+    "email": "admin@peakinc.com"
+  },
+  {
+    "id": "APP-1009",
+    "name": "Anita Desai",
+    "type": "Mentor",
+    "date": "Aug 18, 2026",
+    "status": "Pending",
+    "email": "anita.desai@consulting.in"
+  },
+  {
+    "id": "APP-1010",
+    "name": "Skyward Drones",
+    "type": "Startup",
+    "date": "Aug 17, 2026",
+    "status": "Approved",
+    "email": "info@skyward.io"
+  },
+  {
+    "id": "APP-1011",
+    "name": "Rajiv Menon",
+    "type": "Mentor",
+    "date": "Aug 16, 2026",
+    "status": "Rejected",
+    "email": "rmenon@advisory.com"
+  },
+  {
+    "id": "APP-1012",
+    "name": "FutureWorks Co",
+    "type": "Enterprise",
+    "date": "Aug 15, 2026",
+    "status": "Approved",
+    "email": "hello@futureworks.in"
+  }
+]

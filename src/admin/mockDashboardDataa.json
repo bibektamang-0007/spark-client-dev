@@ -1,0 +1,73 @@
+{
+  "overview": [
+    {
+      "id": "startups",
+      "title": "Total Startups",
+      "value": "1,245",
+      "trend": "+12.5%",
+      "trendLabel": "from last month",
+      "isPositive": true
+    },
+    {
+      "id": "mentors",
+      "title": "Active Mentors",
+      "value": "342",
+      "trend": "+4.1%",
+      "trendLabel": "from last month",
+      "isPositive": true
+    },
+    {
+      "id": "enterprises",
+      "title": "Enterprises",
+      "value": "89",
+      "trend": "-1.2%",
+      "trendLabel": "from last month",
+      "isPositive": false
+    },
+    {
+      "id": "aspirants",
+      "title": "Aspirants",
+      "value": "5,678",
+      "trend": "+24.8%",
+      "trendLabel": "from last month",
+      "isPositive": true
+    }
+  ],
+  "recentRegistrations": [
+    {
+      "id": "REG-8091",
+      "name": "EcoCharge Tech",
+      "type": "Startup",
+      "date": "Aug 25, 2026",
+      "status": "Approved"
+    },
+    {
+      "id": "REG-8090",
+      "name": "Dr. Sarah Jenkins",
+      "type": "Mentor",
+      "date": "Aug 24, 2026",
+      "status": "Pending"
+    },
+    {
+      "id": "REG-8089",
+      "name": "Global Ventures LLC",
+      "type": "Enterprise",
+      "date": "Aug 24, 2026",
+      "status": "Approved"
+    },
+    {
+      "id": "REG-8088",
+      "name": "Arjun Patel",
+      "type": "Aspirant",
+      "date": "Aug 23, 2026",
+      "status": "Pending"
+    },
+    {
+      "id": "REG-8087",
+      "name": "Nexus Dynamics",
+      "type": "Startup",
+      "date": "Aug 23, 2026",
+      "status": "Rejected"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "titles": {
+    "registration-title": "Registration from",
+    "registration-subtitle": "Fast, simple, and guided application process",
+    "as-startup": "As a Startup",
+    "as-enterprise": "As a Enterprise",
+    "as-mentor": "As Mentor",
+    "register": "Register",
+    "email-verification": "Email Verification",
+    "phone-verification": "Phone Verification",
+    "enter-security-code": "Enter Security Code"
+  },
+  "labels": {
+    "email": "Please provide your email",
+    "phone": "Please provide you phone number",
+    "already-have-account": "Already have an account?"
+  },
+  "helper-text": {
+    "startup-portal": "Startup Portal",
+    "register-text": " Begin a new startup application or pick up right where you left off.",
+    "as-startup-text": "First-time applicant? Start a fresh draft for state schemes, subsidies, and incubation.",
+    "as-enterprise-text": "First-time applicant? Start a fresh draft for state schemes, subsidies, and incubation.",
+    "as-mentor-text": "First-time applicant? Start a fresh draft for state schemes, subsidies, and incubation.",
+    "email-phone-verification-text": "We will send a code to verify your identity.",
+    "otp-sent-to": "We sent a 6-digit one-time code to"
+  },
+  "errors": {
+    "invalid-email": "Please enter a valid email address.",
+    "invalid-phone": "Please enter a valid phone number."
+  },
+  "actions": {
+    "sending-code": "Sending code...",
+    "send-verification": "Send verification code",
+    "use-phone": "Use Phone Number instead",
+    "use-email": "Use Email Address instead",
+    "log-in": "Log in",
+    "verifying": "Verifying...",
+    "verify": "Verify",
+    "use-different-email": "Use different email",
+    "use-different-phone": "Use different phone number",
+    "resend-code-prompt": "Didn't receive a code? Resend"
+  }
+}
