@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { AnimatedDiv } from "@/shared/components/wrappers/AnimatedDiv";
 import { ShieldCheck } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -77,7 +77,7 @@ export const OtpVerificationForm = ({
       <div className="mt-4 space-y-1">
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-5 w-5 text-brand-primary" />
-          <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+          <h2 className="text-lg font-bold tracking-tight text-foreground">
             {t("titles.enter-security-code")}
           </h2>
         </div>
@@ -113,7 +113,7 @@ export const OtpVerificationForm = ({
         <Button
           type="submit"
           disabled={isSubmitting || !isOtpComplete}
-          className="h-10 w-full rounded-md bg-brand-primary font-semibold tracking-wide text-white transition-colors hover:bg-brand-dark"
+          className="w-full h-12 bg-linear-to-r from-brand-primary to-brand-primary/90 hover:from-brand-primary/90 hover:to-brand-primary text-white rounded-xl text-lg font-semibold shadow-lg shadow-brand-primary/30 transition-all active:scale-[0.98]"
         >
           {isSubmitting ? t("actions.verifying") : t("actions.verify")}
         </Button>

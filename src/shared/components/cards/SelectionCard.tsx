@@ -6,6 +6,8 @@ interface SelectionCardProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   cardTitle: string;
   cardDescription: string;
   icon: ElementType;
+  iconBg: string;
+  iconColor: string;
 }
 
 export const SelectionCard = ({
@@ -14,6 +16,8 @@ export const SelectionCard = ({
   cardDescription,
   icon: Icon,
   className = "",
+  iconBg,
+  iconColor,
   ...props
 }: SelectionCardProps) => {
   return (
@@ -23,9 +27,12 @@ export const SelectionCard = ({
       className={`group relative flex items-start gap-4 rounded-xl border border-border/80 bg-card p-5 text-left transition-all duration-200 hover:border-brand-primary/60 hover:bg-brand-surface/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary ${className}`}
       {...props}
     >
-      <div className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-brand-primary/10 text-brand-primary transition-colors group-hover:bg-brand-primary group-hover:text-white">
-        <Icon className="h-5 w-5" />
-      </div>
+      <span
+        className="grid h-12 w-12 place-items-center rounded-full"
+        style={{ backgroundColor: iconBg, color: iconColor }}
+      >
+        <Icon className="h-6 w-6" />
+      </span>
 
       <div className="flex-1 min-w-0 pr-6">
         <div className="flex items-center gap-2">

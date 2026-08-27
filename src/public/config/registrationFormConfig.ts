@@ -1,9 +1,12 @@
 import type { FormConfig } from "@/shared/components/multiStepForm/MultiStepForm.types";
 import {
+  CONSTITUTION_OF_ENTITY,
   DISTRICTS,
   GENDER,
   INCUBATION_CENTERS,
+  SECTOR_OPTIONS,
   STARTUP_AGE_TYPES,
+  SUB_SECTOR_MAP,
   YESNO,
 } from "../constants/formConstants";
 
@@ -23,29 +26,10 @@ export const registrationFromConfig: FormConfig[] = [
         name: "districtOfResidence",
         options: DISTRICTS,
       },
-      { label: "Email", type: "email", name: "email" },
       {
         label: "If you have registered SPARK ID, please mention the same",
         type: "text",
         name: "sparkId",
-      },
-      {
-        label: "Is aspirant ?",
-        type: "radio",
-        name: "isAspirant",
-        options: YESNO,
-      },
-      {
-        label: "Intended Constitution (Type of Entity, if any)",
-        type: "text",
-        name: "intendedConstitution",
-        dependsOn: { fieldName: "isAspirant", expectedValue: "yes" },
-      },
-      {
-        label: "Expected Registration Date (if any)",
-        type: "date",
-        name: "expectedRegistrationDate",
-        dependsOn: { fieldName: "isAspirant", expectedValue: "yes" },
       },
     ],
   },
@@ -59,13 +43,14 @@ export const registrationFromConfig: FormConfig[] = [
         multiGroupFields: [
           { label: "Name", type: "text", name: "founderName" },
           { label: "Role", type: "text", name: "founderRole" },
+          { label: "Age", type: "text", name: "founderAge" },
+          { label: "PAN no", type: "text", name: "founderPan" },
           {
             label: "Gender",
             type: "radio",
             name: "founderGender",
             options: GENDER,
           },
-          { label: "Age", type: "text", name: "founderAge" },
           {
             label: "COI holder",
             type: "radio",
@@ -73,16 +58,20 @@ export const registrationFromConfig: FormConfig[] = [
             options: YESNO,
           },
           {
+            label: "Percentage of Equity share ",
+            type: "number",
+            name: "equityShare",
+          },
+          {
             label: "Attach COI",
             type: "file",
             name: "founderCoiDoc",
             dependsOn: { fieldName: "isCoiHolder", expectedValue: "yes" },
           },
-          { label: "PAN no", type: "text", name: "founderPan" },
           { label: "PAN document", type: "file", name: "founderPanDoc" },
           {
             label: "Residencial address",
-            type: "text",
+            type: "textarea",
             name: "founderResidenceAddress",
           },
         ],
@@ -93,22 +82,63 @@ export const registrationFromConfig: FormConfig[] = [
   {
     formHeading: "Business",
     children: [
-      { label: "Sector", type: "text", name: "sector" },
-      { label: "Sub-Sector", type: "text", name: "subSector" },
       {
-        label: "Description of Product/Service",
-        type: "text",
-        name: "serviceDescription",
+        label: "Do you have Startup India Recognition as a Startup",
+        type: "radio",
+        name: "indiaRecognizedStartup",
+        options: YESNO,
+        showForRoles: ["startup", "enterprise"],
       },
       {
-        label: "Problem Statement resolved by the Startup",
+        label: "Registration No",
         type: "text",
-        name: "problemStatement",
+        name: "registrationNo",
+        dependsOn: {
+          fieldName: "indiaRecognizedStartup",
+          expectedValue: "yes",
+        },
       },
       {
-        label: "Details of Innovation / IP Component",
+        label: "Registration Date",
+        type: "date",
+        name: "registrationDate",
+        dependsOn: {
+          fieldName: "indiaRecognizedStartup",
+          expectedValue: "yes",
+        },
+      },
+      {
+        label: "Select Constitution of Entity",
+        type: "dropdown",
+        name: "entityConstitution",
+        options: CONSTITUTION_OF_ENTITY,
+      },
+      {
+        label: "If Other (Constitution of Entity)",
         type: "text",
-        name: "innovationIpComponent",
+        name: "otherEntityConstitution",
+        dependsOn: { fieldName: "entityConstitution", expectedValue: "other" },
+      },
+      {
+        label: "Expected Registration Date",
+        type: "date",
+        name: "expectedRegistrationDate",
+        showForRoles: ["aspirant"],
+      },
+      {
+        label: "Sector",
+        type: "dropdown",
+        name: "sector",
+        options: SECTOR_OPTIONS,
+      },
+      {
+        label: "Sub-Sector",
+        type: "dropdown",
+        name: "subSector",
+        cascadingOptions: {
+          dependsOnField: "sector",
+          optionsMap: SUB_SECTOR_MAP,
+        },
       },
       {
         label: "Stage of your Startup",
@@ -122,8 +152,23 @@ export const registrationFromConfig: FormConfig[] = [
         name: "turnOver",
       },
       {
+        label: "Description of Product/Service",
+        type: "textarea",
+        name: "serviceDescription",
+      },
+      {
+        label: "Problem Statement resolved by the Startup",
+        type: "textarea",
+        name: "problemStatement",
+      },
+      {
+        label: "Details of Innovation / IP Component",
+        type: "textarea",
+        name: "innovationIpComponent",
+      },
+      {
         label: "R&D Activities Planned",
-        type: "text",
+        type: "textarea",
         name: "r&dPlanned",
       },
       {
@@ -133,8 +178,8 @@ export const registrationFromConfig: FormConfig[] = [
         options: YESNO,
       },
       {
-        label: "If yes, please provide details thereof",
-        type: "text",
+        label: "If Yes, Please Provide Details Thereof",
+        type: "textarea",
         name: "iprDetails",
         dependsOn: { fieldName: "isIprFiled", expectedValue: "yes" },
       },
@@ -145,13 +190,16 @@ export const registrationFromConfig: FormConfig[] = [
         options: YESNO,
       },
       {
-        label: "If yes, name and address of the Incubator",
-        type: "text",
-        name: "incubatorAssociated",
+        label: "Incubation Center",
+        type: "dropdown",
+        name: "incubationCenter",
+        options: INCUBATION_CENTERS.filter(
+          (center) => center.value !== "Others",
+        ),
         dependsOn: { fieldName: "isIncubatorAssociated", expectedValue: "yes" },
       },
       {
-        label: "If no, please select your preferred incubation centre",
+        label: "If No, Please Select Your Preferred Incubation Centre",
         type: "dropdown",
         name: "preferedIncubationCenter",
         options: INCUBATION_CENTERS,
@@ -172,6 +220,9 @@ export const registrationFromConfig: FormConfig[] = [
   {
     formHeading: "Financial",
     children: [
+      { label: "Bank name", type: "text", name: "bankName" },
+      { label: "Account number", type: "text", name: "accountNumber" },
+      { label: "IFSC code", type: "text", name: "ifscCode" },
       {
         label: "Have you received any finance for Startup earlier",
         type: "radio",
@@ -180,16 +231,13 @@ export const registrationFromConfig: FormConfig[] = [
       },
       {
         label: "If yes, please provide details thereof",
-        type: "text",
+        type: "textarea",
         name: "financeReceivedDetails",
         dependsOn: {
           fieldName: "financeReceived",
           expectedValue: "yes",
         },
       },
-      { label: "Bank name", type: "text", name: "bankName" },
-      { label: "Account number", type: "text", name: "accountNumber" },
-      { label: "IFSC code", type: "text", name: "ifscCode" },
     ],
   },
   {

@@ -2,7 +2,7 @@ import { useFieldArray, type Control, type FieldErrors } from "react-hook-form";
 import { Plus, Trash2 } from "lucide-react";
 import type { FieldConfig } from "./MultiStepForm.types";
 import { FormFieldRenderer } from "./FormFieldRenderer";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 interface MultiGroupFieldProps {
   fieldConfig: FieldConfig;
@@ -19,6 +19,13 @@ export function MultiGroupField({
     control,
     name: fieldConfig.name,
   });
+
+  const standardFields = fieldConfig?.multiGroupFields?.filter(
+    (field) => field.type !== "file",
+  );
+  const documentFields = fieldConfig?.multiGroupFields?.filter(
+    (field) => field.type === "file",
+  );
 
   const handleAdd = () => {
     const emptyItem: Record<string, any> = {};
@@ -78,18 +85,32 @@ export function MultiGroupField({
               </Button>
             </div>
 
-            <div className="grid grid-cols-12 gap-x-8 gap-y-6 grow items-start">
-              {fieldConfig.multiGroupFields?.map((subField) => (
-                <FormFieldRenderer
-                  key={`${fieldConfig.name}.${index}.${subField.name}`}
-                  fieldConfig={{
-                    ...subField,
-                    name: `${fieldConfig.name}.${index}.${subField.name}`,
-                  }}
-                  control={control}
-                  errors={errors}
-                />
-              ))}
+            <div className="flex flex-col grow space-y-6">
+              <div className="grid grid-cols-12 gap-x-8 gap-y-6 items-start">
+                {standardFields?.map((subField) => (
+                  <FormFieldRenderer
+                    key={`${fieldConfig.name}.${index}.${subField.name}`}
+                    fieldConfig={{
+                      ...subField,
+                      name: `${fieldConfig.name}.${index}.${subField.name}`,
+                    }}
+                    control={control}
+                    errors={errors}
+                  />
+                ))}
+                {documentFields &&
+                  documentFields.map((subField) => (
+                    <FormFieldRenderer
+                      key={`${fieldConfig.name}.${index}.${subField.name}`}
+                      fieldConfig={{
+                        ...subField,
+                        name: `${fieldConfig.name}.${index}.${subField.name}`,
+                      }}
+                      control={control}
+                      errors={errors}
+                    />
+                  ))}
+              </div>
             </div>
           </div>
         ))}

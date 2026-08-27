@@ -29,7 +29,7 @@ export const AdminLayout = ({ userRole }: AdminLayoutProps) => {
 
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const logoutUser = () => {
-    navigate("/auth/login");
+    navigate("/auth/loginv2");
   };
 
   return (

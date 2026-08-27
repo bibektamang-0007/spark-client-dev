@@ -1,3 +1,5 @@
+import type { RegisterAsOption } from "@/public/components/forms/registration/Registration.types";
+
 export type FieldType =
   | "text"
   | "dropdown"
@@ -7,11 +9,17 @@ export type FieldType =
   | "date"
   | "mobile"
   | "email"
-  | "number";
+  | "number"
+  | "textarea";
 
 export interface FieldOption {
   label: string;
   value: string;
+}
+
+export interface CascadingOptions {
+  dependsOnField: string;
+  optionsMap: Record<string, FieldOption[]>;
 }
 
 export interface FieldDependency {
@@ -24,10 +32,15 @@ export interface FieldConfig {
   type: FieldType;
   name: string;
   options?: FieldOption[];
+  cascadingOptions?: CascadingOptions;
   required?: boolean;
   multiGroupFields?: FieldConfig[];
   col?: 1 | 2 | 3;
   dependsOn?: FieldDependency;
+  showForRoles?: RegisterAsOption[];
+  placeholder?: string;
+  additionalNotes?: string;
+  maxLength?: number;
 }
 
 export interface FormConfig {
@@ -41,6 +54,7 @@ export interface MultiStepFormProps {
   formConfig: FormConfig[];
   onStepSubmit?: (stepData: any, stepIndex: number) => void;
   onFinalSubmit: (allData: any) => void;
+  registerAs: RegisterAsOption;
 }
 
 export interface SingleStepFormProps {
@@ -50,4 +64,5 @@ export interface SingleStepFormProps {
   defaultValues: any;
   onSubmit: (data: Record<string, any>) => void;
   onBack: (currentValues: Record<string, any>) => void;
+  registerAs: RegisterAsOption;
 }

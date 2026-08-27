@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { FormFieldRenderer } from "./FormFieldRenderer";
 import type { SingleStepFormProps } from "./MultiStepForm.types";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 export function SingleStepForm({
   config,
@@ -10,6 +10,7 @@ export function SingleStepForm({
   defaultValues = {},
   onSubmit,
   onBack,
+  registerAs,
 }: SingleStepFormProps) {
   const {
     control,
@@ -25,24 +26,44 @@ export function SingleStepForm({
     onBack(getValues());
   };
 
+  const standardFields = config?.children.filter(
+    (field) => field.type !== "file",
+  );
+  const documentFields = config?.children.filter(
+    (field) => field.type === "file",
+  );
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col h-full space-y-6 "
+      className="flex flex-col h-full space-y-6"
       noValidate
     >
-      <div className="grid grid-cols-12 gap-x-8 gap-y-6 grow items-start md:border md:p-6 rounded-md">
-        {config?.children.map((fieldConfig) => (
-          <FormFieldRenderer
-            key={fieldConfig.name}
-            fieldConfig={fieldConfig}
-            control={control}
-            errors={errors}
-          />
-        ))}
+      <div className="flex flex-col grow md:border md:border-border md:p-6 rounded-md space-y-8">
+        <div className="grid grid-cols-12 gap-x-8 gap-y-6 items-start">
+          {standardFields.map((fieldConfig) => (
+            <FormFieldRenderer
+              key={fieldConfig.name}
+              fieldConfig={fieldConfig}
+              control={control}
+              errors={errors}
+              registerAs={registerAs}
+            />
+          ))}
+          {documentFields &&
+            documentFields.map((fieldConfig) => (
+              <FormFieldRenderer
+                key={fieldConfig.name}
+                fieldConfig={fieldConfig}
+                control={control}
+                errors={errors}
+                registerAs={registerAs}
+              />
+            ))}
+        </div>
       </div>
 
-      <div className="flex justify-between items-center pt-5">
+      <div className="flex justify-between items-center pt-2">
         <Button
           type="button"
           variant="secondary"
@@ -52,7 +73,10 @@ export function SingleStepForm({
         >
           Back
         </Button>
-        <Button type="submit" className="rounded-md bg-brand-primary">
+        <Button
+          type="submit"
+          className="rounded-md bg-brand-primary hover:bg-brand-primary/90 text-white"
+        >
           {stepIndex === totalSteps - 1 ? "Submit" : "Save and continue"}
         </Button>
       </div>

@@ -5,6 +5,7 @@
     "as-startup": "As a Startup",
     "as-enterprise": "As a Enterprise",
     "as-mentor": "As Mentor",
+    "as-aspirant": "As Aspirant",
     "register": "Register",
     "email-verification": "Email Verification",
     "phone-verification": "Phone Verification",
@@ -21,6 +22,7 @@
     "as-startup-text": "First-time applicant? Start a fresh draft for state schemes, subsidies, and incubation.",
     "as-enterprise-text": "First-time applicant? Start a fresh draft for state schemes, subsidies, and incubation.",
     "as-mentor-text": "First-time applicant? Start a fresh draft for state schemes, subsidies, and incubation.",
+    "as-aspirant-text": "First-time applicant? Start a fresh draft for state schemes, subsidies, and incubation.",
     "email-phone-verification-text": "We will send a code to verify your identity.",
     "otp-sent-to": "We sent a 6-digit one-time code to"
   },

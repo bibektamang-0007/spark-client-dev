@@ -28,6 +28,7 @@ export default function MultiStepForm({
   formConfig,
   onStepSubmit,
   onFinalSubmit,
+  registerAs,
 }: MultiStepFormProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [direction, setDirection] = useState(0);
@@ -54,13 +55,13 @@ export default function MultiStepForm({
     setDirection(-1);
     setCurrentStep((prev) => prev - 1);
   };
-
+  console.log(formSubTitle, formTitle);
   return (
     <div className="w-full mx-auto">
-      <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">
+      {/* <h2 className="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">
         {formTitle}
       </h2>
-      <span className="text-gray-500 text-sm">{formSubTitle}</span>
+      <span className="text-gray-500 text-sm">{formSubTitle}</span> */}
       {/* Progress Tracker */}
       <div className="my-8 mb-14 sm:mb-8 w-full mx-auto px-4">
         <div className="flex items-center justify-between">
@@ -150,7 +151,7 @@ export default function MultiStepForm({
         </div>
       </div>
 
-      <div className="min-h-75 overflow-hidden relative">
+      <div className="overflow-hidden relative">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentStep}
@@ -169,6 +170,7 @@ export default function MultiStepForm({
               defaultValues={globalFormData}
               onSubmit={handleStepCompletion}
               onBack={handleBack}
+              registerAs={registerAs}
             />
           </motion.div>
         </AnimatePresence>

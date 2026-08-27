@@ -3,15 +3,15 @@ import { Search, UserPlus, Filter } from "lucide-react";
 
 import mockUsers from "@/admin/mockUsers.json";
 import { UserTable, type User } from "./UserTable";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/shared/components/ui/select";
+} from "@/components/ui/select";
 import { PaginationControls } from "@/admin/components/PaginationControls";
 
 const ITEMS_PER_PAGE = 5;

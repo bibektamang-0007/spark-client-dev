@@ -1,4 +1,5 @@
 import Dashboard from "./features/dashboard/Dashboard";
+import { ApplicantDetailsPage } from "./features/registration_application/ApplicationDetails";
 import Applications from "./features/registration_application/Applications";
 import UserManagement from "./features/user_management/UserManagement";
 import { ProtectedLayout } from "./layouts/ProtectedLayout";
@@ -14,6 +15,7 @@ export const protectedRoutes = [
         element: <UserManagement />,
       },
       { path: "/admin/applications", element: <Applications /> },
+      { path: "/admin/application-details", element: <ApplicantDetailsPage /> },
     ],
   },
 ];

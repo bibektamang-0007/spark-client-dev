@@ -8,21 +8,23 @@ import { MultiGroupField } from "./MultiGroupField";
 import type { FieldConfig } from "./MultiStepForm.types";
 import { useMemo } from "react";
 import { FileUpload } from "../inputs/FileUpload";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import type { RegisterAsOption } from "@/public/components/forms/registration/Registration.types";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface FormFieldRendererProps {
   fieldConfig: FieldConfig;
   control: Control<any>;
   errors: FieldErrors;
+  registerAs?: RegisterAsOption;
 }
 
 // 1. Helper to resolve relative nested field names inside dynamic arrays
@@ -71,6 +73,7 @@ export function FormFieldRenderer({
   fieldConfig,
   control,
   errors,
+  registerAs,
 }: FormFieldRendererProps) {
   const colSpanClass = getColSpanClass(fieldConfig.col);
   const targetFieldName = useMemo(() => {
@@ -81,6 +84,35 @@ export function FormFieldRenderer({
         )
       : "";
   }, [fieldConfig.name, fieldConfig.dependsOn]);
+
+  // --- Watch for Cascading Parent Field ---
+  const cascadingParentName = useMemo(() => {
+    return fieldConfig.cascadingOptions
+      ? resolveTargetFieldName(
+          fieldConfig.name,
+          fieldConfig.cascadingOptions.dependsOnField,
+        )
+      : "";
+  }, [fieldConfig.name, fieldConfig.cascadingOptions]);
+
+  const watchedCascadingParent = useWatch({
+    control,
+    name: cascadingParentName,
+  });
+
+  // Calculate dynamic options based on the parent value
+  const activeOptions = useMemo(() => {
+    if (fieldConfig.cascadingOptions && watchedCascadingParent) {
+      return (
+        fieldConfig.cascadingOptions.optionsMap[watchedCascadingParent] || []
+      );
+    }
+    return fieldConfig.options || [];
+  }, [
+    fieldConfig.cascadingOptions,
+    fieldConfig.options,
+    watchedCascadingParent,
+  ]);
 
   // Watch target field if conditional dependency is configured
   const watchedValue = useWatch({
@@ -118,6 +150,13 @@ export function FormFieldRenderer({
 
     return rules;
   }, [fieldConfig.required, fieldConfig.type, fieldConfig.label]);
+
+  // --- NEW: Evaluate Role-based condition ---
+  if (fieldConfig.showForRoles && registerAs) {
+    if (!fieldConfig.showForRoles.includes(registerAs)) {
+      return null;
+    }
+  }
 
   // Evaluate condition: hide component if expected value does not match
   if (fieldConfig.dependsOn) {
@@ -163,163 +202,229 @@ export function FormFieldRenderer({
         name={fieldConfig.name}
         control={control}
         rules={validationRules}
-        render={({ field, fieldState }) => (
-          <div className="flex flex-col space-y-2">
-            <Label
-              htmlFor={fieldConfig.name}
-              className="font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-1"
-            >
-              {fieldConfig.label}
-              {fieldConfig.required && (
-                <span className="text-destructive font-bold">*</span>
-              )}
-            </Label>
+        render={({ field, fieldState }) => {
+          if (fieldConfig.cascadingOptions && field.value) {
+            const isValid = activeOptions.some(
+              (opt) => opt.value === field.value,
+            );
+            if (!isValid && activeOptions.length > 0) {
+              // Delay the reset slightly to avoid React render cycle warnings
+              setTimeout(() => field.onChange(""), 0);
+            }
+          }
 
-            {(() => {
-              switch (fieldConfig.type) {
-                case "text":
-                  return (
-                    <Input
-                      {...field}
-                      id={fieldConfig.name}
-                      value={field.value ?? ""}
-                      placeholder={`Enter ${fieldConfig.label.toLowerCase()}`}
-                      aria-invalid={fieldState.invalid}
-                      className="text-sm"
-                    />
-                  );
+          return (
+            <div className="flex flex-col space-y-2">
+              {/* Label and Optional Additional Notes */}
+              <div>
+                <Label
+                  htmlFor={fieldConfig.name}
+                  className="font-semibold leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center gap-1"
+                >
+                  {fieldConfig.label}
+                  {fieldConfig.required && (
+                    <span className="text-destructive font-bold">*</span>
+                  )}
+                </Label>
+                {fieldConfig.additionalNotes && (
+                  <p className="text-[11.5px] text-muted-foreground mt-1.5 leading-relaxed">
+                    {fieldConfig.additionalNotes}
+                  </p>
+                )}
+              </div>
 
-                case "email":
-                  return (
-                    <Input
-                      {...field}
-                      id={fieldConfig.name}
-                      type="email"
-                      value={field.value ?? ""}
-                      placeholder="name@example.com"
-                      aria-invalid={fieldState.invalid}
-                      className="text-sm"
-                    />
-                  );
-
-                case "mobile":
-                  return (
-                    <Input
-                      {...field}
-                      id={fieldConfig.name}
-                      type="tel"
-                      maxLength={10}
-                      value={field.value ?? ""}
-                      placeholder="9876543210"
-                      aria-invalid={fieldState.invalid}
-                      onChange={(e) => {
-                        const numericOnly = e.target.value.replace(/\D/g, "");
-                        field.onChange(numericOnly);
-                      }}
-                      className="text-sm"
-                    />
-                  );
-
-                case "number":
-                  return (
-                    <Input
-                      {...field}
-                      id={fieldConfig.name}
-                      type="number"
-                      value={field.value ?? ""}
-                      placeholder={`Enter ${fieldConfig.label.toLowerCase()}`}
-                      aria-invalid={fieldState.invalid}
-                      className="text-sm"
-                    />
-                  );
-
-                case "date":
-                  return (
-                    <Input
-                      {...field}
-                      id={fieldConfig.name}
-                      type="date"
-                      value={field.value ?? ""}
-                      aria-invalid={fieldState.invalid}
-                      className="block w-full text-sm"
-                    />
-                  );
-
-                case "dropdown":
-                  return (
-                    <Select
-                      value={field.value ?? ""}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger
-                        id={fieldConfig.name}
-                        aria-invalid={fieldState.invalid}
-                        className="w-full"
-                      >
-                        <SelectValue
-                          placeholder={`Select ${fieldConfig.label.toLowerCase()}`}
+              {(() => {
+                switch (fieldConfig.type) {
+                  case "textarea":
+                    return (
+                      <div className="relative">
+                        <textarea
+                          {...field}
+                          id={fieldConfig.name}
+                          value={field.value ?? ""}
+                          placeholder={
+                            fieldConfig.placeholder ??
+                            `Enter ${fieldConfig.label.toLowerCase()}`
+                          }
+                          maxLength={fieldConfig.maxLength}
+                          aria-invalid={fieldState.invalid}
+                          className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none h-30"
                         />
-                      </SelectTrigger>
-                      <SelectContent alignItemWithTrigger={false}>
-                        {fieldConfig.options?.map((opt) => (
-                          <SelectItem key={opt.value} value={opt.value}>
-                            {opt.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  );
+                        {fieldConfig.maxLength && (
+                          <div className="text-[10px] text-muted-foreground text-right mt-1">
+                            {String(field.value ?? "").length} /{" "}
+                            {fieldConfig.maxLength}
+                          </div>
+                        )}
+                      </div>
+                    );
 
-                case "radio":
-                  return (
-                    <RadioGroup
-                      value={field.value ?? ""}
-                      onValueChange={field.onChange}
-                      className="flex flex-wrap gap-6 pt-1"
-                    >
-                      {fieldConfig.options?.map((opt) => (
-                        <div
-                          key={opt.value}
-                          className="flex items-center space-x-2"
+                  case "text":
+                    return (
+                      <Input
+                        {...field}
+                        id={fieldConfig.name}
+                        value={field.value ?? ""}
+                        placeholder={
+                          fieldConfig.placeholder ??
+                          `Enter ${fieldConfig.label.toLowerCase()}`
+                        }
+                        aria-invalid={fieldState.invalid}
+                        className="text-sm"
+                      />
+                    );
+
+                  case "email":
+                    return (
+                      <Input
+                        {...field}
+                        id={fieldConfig.name}
+                        type="email"
+                        value={field.value ?? ""}
+                        placeholder={
+                          fieldConfig.placeholder ?? "name@example.com"
+                        }
+                        aria-invalid={fieldState.invalid}
+                        className="text-sm"
+                      />
+                    );
+
+                  case "mobile":
+                    return (
+                      <Input
+                        {...field}
+                        id={fieldConfig.name}
+                        type="tel"
+                        maxLength={10}
+                        value={field.value ?? ""}
+                        placeholder={fieldConfig.placeholder ?? "9876543210"}
+                        aria-invalid={fieldState.invalid}
+                        onChange={(e) => {
+                          const numericOnly = e.target.value.replace(/\D/g, "");
+                          field.onChange(numericOnly);
+                        }}
+                        className="text-sm"
+                      />
+                    );
+
+                  case "number":
+                    return (
+                      <Input
+                        {...field}
+                        id={fieldConfig.name}
+                        type="number"
+                        value={field.value ?? ""}
+                        placeholder={
+                          fieldConfig.placeholder ??
+                          `Enter ${fieldConfig.label.toLowerCase()}`
+                        }
+                        aria-invalid={fieldState.invalid}
+                        className="text-sm"
+                      />
+                    );
+
+                  case "date":
+                    return (
+                      <Input
+                        {...field}
+                        id={fieldConfig.name}
+                        type="date"
+                        value={field.value ?? ""}
+                        aria-invalid={fieldState.invalid}
+                        className="block w-full text-sm"
+                      />
+                    );
+
+                  case "dropdown":
+                    return (
+                      <Select
+                        value={field.value ?? ""}
+                        onValueChange={field.onChange}
+                        // --- NEW: Disable if cascading but parent is not selected ---
+                        disabled={
+                          !!fieldConfig.cascadingOptions &&
+                          !watchedCascadingParent
+                        }
+                      >
+                        <SelectTrigger
+                          id={fieldConfig.name}
+                          aria-invalid={fieldState.invalid}
+                          className="w-full"
                         >
-                          <RadioGroupItem
-                            value={opt.value}
-                            id={`${fieldConfig.name}-${opt.value}`}
+                          <SelectValue
+                            placeholder={
+                              // --- NEW: Dynamic placeholder for cascading fields ---
+                              fieldConfig.cascadingOptions &&
+                              !watchedCascadingParent
+                                ? `Select ${fieldConfig.cascadingOptions.dependsOnField} first`
+                                : (fieldConfig.placeholder ??
+                                  `Select ${fieldConfig.label.toLowerCase()}`)
+                            }
                           />
-                          <Label
-                            htmlFor={`${fieldConfig.name}-${opt.value}`}
-                            className="font-normal cursor-pointer text-sm"
+                        </SelectTrigger>
+                        <SelectContent alignItemWithTrigger={false}>
+                          {/* --- NEW: Use activeOptions instead of fieldConfig.options --- */}
+                          {activeOptions.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    );
+
+                  case "radio":
+                    return (
+                      <RadioGroup
+                        value={field.value ?? ""}
+                        onValueChange={field.onChange}
+                        className="flex flex-wrap gap-6 pt-1"
+                      >
+                        {/* --- NEW: Use activeOptions instead of fieldConfig.options --- */}
+                        {activeOptions.map((opt) => (
+                          <div
+                            key={opt.value}
+                            className="flex items-center space-x-2"
                           >
-                            {opt.label}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  );
+                            <RadioGroupItem
+                              value={opt.value}
+                              id={`${fieldConfig.name}-${opt.value}`}
+                            />
+                            <Label
+                              htmlFor={`${fieldConfig.name}-${opt.value}`}
+                              className="font-normal cursor-pointer text-sm"
+                            >
+                              {opt.label}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    );
 
-                case "file":
-                  return (
-                    <FileUpload
-                      name={fieldConfig.name}
-                      value={field.value}
-                      onChange={field.onChange}
-                      onBlur={field.onBlur}
-                      hasError={fieldState.invalid}
-                    />
-                  );
+                  case "file":
+                    return (
+                      <FileUpload
+                        name={fieldConfig.name}
+                        value={field.value}
+                        onChange={field.onChange}
+                        onBlur={field.onBlur}
+                        hasError={fieldState.invalid}
+                      />
+                    );
 
-                default:
-                  return null;
-              }
-            })()}
+                  default:
+                    return null;
+                }
+              })()}
 
-            {fieldState.error && (
-              <span className="text-xs text-destructive mt-1 font-medium">
-                {fieldState.error.message}
-              </span>
-            )}
-          </div>
-        )}
+              {fieldState.error && (
+                <span className="text-xs text-destructive mt-1 font-medium">
+                  {fieldState.error.message}
+                </span>
+              )}
+            </div>
+          );
+        }}
       />
     </div>
   );

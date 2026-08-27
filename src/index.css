@@ -151,5 +151,5 @@
 }
 
 .card-box {
-  @apply rounded-2xl sm:border sm:border-border/60 bg-card sm:shadow-xl shadow-slate-200/40 sm:p-8 w-full max-w-120;
+  @apply rounded-2xl sm:border sm:border-border/60 bg-card sm:shadow-xl shadow-slate-200/40 sm:p-8 w-full;
 }

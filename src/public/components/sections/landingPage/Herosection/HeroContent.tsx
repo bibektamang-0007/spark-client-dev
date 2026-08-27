@@ -1,7 +1,7 @@
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { HeroBadge } from "./HeroBadge";
 import { HeroStats, type StatItem } from "./HeroStats";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const DEFAULT_STATS: StatItem[] = [
   { value: "1,284", label: "startups registered" },
@@ -10,6 +10,10 @@ const DEFAULT_STATS: StatItem[] = [
 ];
 
 export const HeroContent = () => {
+  const navigate = useNavigate();
+  const goToRegister = () => {
+    navigate("/auth/loginv2", { replace: true, state: "register" });
+  };
   return (
     <div className="flex max-w-135 flex-col items-start gap-6.5">
       <HeroBadge label="Sikkim Startup Policy 2024" />
@@ -27,16 +31,17 @@ export const HeroContent = () => {
       <div className="mt-0.5 flex flex-wrap items-center gap-3">
         <Button
           size="lg"
-          className="bg-brand-secondary text-brand-primary rounded-md hover:bg-brand-secondary"
+          onClick={goToRegister}
+          className="h-12 bg-brand-secondary hover:bg-brand-secondary/80 text-brand-primary rounded-xl text-lg font-semibold cursor-pointer"
         >
-          <Link to="/auth/verification">Register your startup</Link>
+          <span>Register your startup</span>
         </Button>
         <Button
           size="lg"
           variant="outline"
-          className="text-brand-primary bg-brand-ternary rounded-md hover:bg-brand-ternary"
+          className="h-12 bg-brand-ternary hover:bg-brand-ternary/80 text-brand-primary rounded-xl text-lg font-semibold"
         >
-          <Link to="/auth/login">Log in</Link>
+          <Link to="/auth/loginv2">Log in</Link>
         </Button>
       </div>
 

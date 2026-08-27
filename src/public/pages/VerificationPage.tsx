@@ -39,7 +39,7 @@ export const VerificationPage = () => {
 
   return (
     <div className="container mx-auto p-6 py-14 md:py-32 flex justify-center">
-      <div className="card-box">
+      <div className="card-box max-w-120">
         <AnimatePresence mode="wait">
           {showOtpValidation ? (
             <OtpVerificationForm

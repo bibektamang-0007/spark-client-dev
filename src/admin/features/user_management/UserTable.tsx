@@ -1,4 +1,4 @@
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils/utils";
 import { Edit, ShieldBan, Trash2 } from "lucide-react";
 

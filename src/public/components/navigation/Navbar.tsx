@@ -1,55 +1,40 @@
 import { useState } from "react";
 import { Menu } from "lucide-react";
-import type { NavbarProps } from "./navigation.types";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { cn } from "@/shared/utils/utils";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/shared/components/ui/sheet";
+} from "@/components/ui/sheet";
+import { BrandLogo } from "@/shared/components/cards/BrandLogo";
+import { NAV_ITEMS } from "@/public/config/navigationConfig";
 
-export function Navbar({
-  logo,
-  navItems,
-  loginText,
-  loginHref = "#login",
-  registerText,
-  registerHref = "#register",
-  className,
-}: NavbarProps) {
+export function Navbar() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const goToRegister = () => {
+    navigate("/auth/loginv2", { replace: true, state: "register" });
+  };
   return (
     <header
       className={cn(
         "sticky top-0 z-40 w-full border-b border-white/10 bg-brand-header backdrop-blur-md",
-        className,
       )}
     >
       <div className="container mx-auto flex items-center justify-between gap-4 px-6 py-2.5">
         {/* Brand / Logo */}
         <div className="flex gap-8">
-          <Link
-            to="/"
-            className="flex shrink-0 items-center gap-3 transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-          >
-            <span className="grid place-items-center rounded-lg bg-white pb-1 px-1.5 shadow-sm">
-              <img
-                src={logo?.src}
-                alt={logo?.alt}
-                className="h-12 w-auto block mix-blend-multiply object-contain"
-              />
-            </span>
-          </Link>
+          <BrandLogo />
           {/* Desktop Navigation Links */}
           <nav
             className="hidden items-center gap-6 lg:flex lg:gap-8"
             aria-label="Main Navigation"
           >
-            {navItems?.map((item) => (
+            {NAV_ITEMS?.map((item) => (
               <Link
                 key={item.label}
                 to={item.href}
@@ -68,14 +53,15 @@ export function Navbar({
         {/* Desktop Action CTAs */}
         <div className="hidden items-center gap-2.5 lg:flex shrink-0">
           <Button className="h-auto rounded-sm border-2 border-white bg-white px-6 py-2.5 text-[12.5px] font-bold uppercase tracking-wider text-brand-primary transition-colors hover:bg-brand-surface hover:text-brand-dark">
-            <Link to={loginHref}>{loginText}</Link>
+            <Link to="/auth/loginv2">Log In</Link>
           </Button>
 
           <Button
             variant="outline"
-            className="h-auto rounded-[3px] border-2 border-white/85 bg-transparent px-6 py-2.5 text-[12.5px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-white/10 hover:text-white"
+            onClick={goToRegister}
+            className="cursor-pointer  h-auto rounded-[3px] border-2 border-white/85 bg-transparent px-6 py-2.5 text-[12.5px] font-bold uppercase tracking-wider text-white transition-colors hover:bg-white/10 hover:text-white"
           >
-            <Link to={registerHref}>{registerText}</Link>
+            <span>REGISTER YOUR STARTAUP</span>
           </Button>
         </div>
 
@@ -101,7 +87,7 @@ export function Navbar({
               </SheetHeader>
               <div className="flex flex-col gap-6 p-6">
                 <nav className="flex flex-col gap-4">
-                  {navItems?.map((item) => (
+                  {NAV_ITEMS?.map((item) => (
                     <a
                       key={item.label}
                       href={item.href}
@@ -125,17 +111,18 @@ export function Navbar({
                     }}
                     className="w-full rounded-[3px] border-2 border-white bg-white text-[12.5px] font-bold uppercase tracking-wider text-brand-primary hover:bg-brand-surface"
                   >
-                    <Link to={loginHref}>{loginText}</Link>
+                    <Link to="/auth/loginv2">Log In</Link>
                   </Button>
 
                   <Button
                     onClick={() => {
                       setIsOpen(false);
+                      goToRegister();
                     }}
                     variant="outline"
                     className="w-full rounded-[3px] border-2 border-white/85 bg-transparent text-[12.5px] font-bold uppercase tracking-wider text-white hover:bg-white/10 hover:text-white"
                   >
-                    <Link to={registerHref}>{registerText}</Link>
+                    <span>REGISTER YOUR STARTAUP</span>
                   </Button>
                 </div>
               </div>

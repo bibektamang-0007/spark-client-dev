@@ -2,10 +2,10 @@ import { useState, type Dispatch, type SetStateAction } from "react";
 import { Link } from "react-router";
 import type { RegistrationMode } from "./Verification.types";
 import { AnimatedDiv } from "@/shared/components/wrappers/AnimatedDiv";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Mail, Phone } from "lucide-react";
-import { Label } from "@/shared/components/ui/label";
-import { Input } from "@/shared/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -59,23 +59,18 @@ export const EmailPhoneVerificationForm = ({
 
   return (
     <AnimatedDiv animationKey="email-phone-verify">
-      <div className="space-y-1">
-        <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-          {registrationMode === "email"
-            ? t("titles.email-verification")
-            : t("titles.phone-verification")}
-        </h2>
-        <p className="text-xs text-muted-foreground">
-          {t("helper-text.email-phone-verification-text")}
-        </p>
-      </div>
-
       <form onSubmit={onFormSubmit} noValidate className="mt-6 space-y-4">
         {registrationMode === "email" ? (
           <div className="space-y-2">
-            <Label htmlFor="registered-email" className="text-xs font-semibold">
+            <Label
+              htmlFor="registered-email"
+              className="text-sm font-semibold text-gray-700"
+            >
               {t("labels.email")}
             </Label>
+            <p className="text-xs text-muted-foreground">
+              {t("helper-text.email-phone-verification-text")}
+            </p>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -88,7 +83,7 @@ export const EmailPhoneVerificationForm = ({
                 }}
                 onBlur={() => setIsEmailTouched(true)}
                 placeholder="name@startup.in"
-                className="pl-9 h-10"
+                className="pl-10 h-12 bg-brand-secondary/30 rounded-xl transition-all"
                 aria-invalid={showEmailError}
                 autoFocus
               />
@@ -104,6 +99,9 @@ export const EmailPhoneVerificationForm = ({
             <Label htmlFor="registered-phone" className="text-xs font-semibold">
               {t("labels.phone")}
             </Label>
+            <p className="text-xs text-muted-foreground">
+              {t("helper-text.email-phone-verification-text")}
+            </p>
             <div className="relative">
               <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -118,7 +116,7 @@ export const EmailPhoneVerificationForm = ({
                 }}
                 onBlur={() => setIsPhoneTouched(true)}
                 placeholder="9876543210"
-                className="pl-9 h-10"
+                className="pl-10 h-12 bg-brand-secondary/30 border-transparent rounded-xl transition-all"
                 aria-invalid={showPhoneError}
                 autoFocus
               />
@@ -134,7 +132,7 @@ export const EmailPhoneVerificationForm = ({
         <Button
           type="submit"
           disabled={isSubmitting || !isFormValid}
-          className="h-10 w-full rounded-md bg-brand-primary font-semibold tracking-wide text-white transition-colors hover:bg-brand-dark"
+          className="w-full h-12 bg-linear-to-r from-brand-primary to-brand-primary/90 hover:from-brand-primary/90 hover:to-brand-primary text-white rounded-xl text-lg font-semibold shadow-lg shadow-brand-primary/30 transition-all active:scale-[0.98]"
         >
           {isSubmitting
             ? t("actions.sending-code")
@@ -143,7 +141,7 @@ export const EmailPhoneVerificationForm = ({
       </form>
 
       {/* Footer Actions */}
-      <div className="mt-6 flex flex-col items-center gap-3 text-sm">
+      <div className="mt-6 text-center text-sm">
         <button
           type="button"
           onClick={toggleMode}
@@ -153,16 +151,6 @@ export const EmailPhoneVerificationForm = ({
             ? t("actions.use-phone")
             : t("actions.use-email")}
         </button>
-
-        <p className="text-muted-foreground">
-          {t("labels.already-have-account")}
-          <Link
-            to="/auth/login"
-            className="font-medium text-slate-900 transition-colors hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded-sm"
-          >
-            {t("actions.log-in")}
-          </Link>
-        </p>
       </div>
     </AnimatedDiv>
   );

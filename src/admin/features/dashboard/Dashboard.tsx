@@ -8,7 +8,7 @@ import {
 
 // Import your mock data
 import dashboardData from "@/admin/mockDashboardDataa.json";
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { StatCard } from "./StatCard";
 import { RecentRegistrations } from "../registration_application/RecentRegistrations";
 

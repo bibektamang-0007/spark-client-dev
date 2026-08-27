@@ -1,6 +1,7 @@
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/shared/utils/utils";
 import { MoreHorizontal, Eye } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export interface Application {
   id: string;
@@ -16,6 +17,7 @@ interface ApplicationTableProps {
 }
 
 export function ApplicationTable({ data }: ApplicationTableProps) {
+  const navigate = useNavigate();
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
       case "approved":
@@ -87,6 +89,7 @@ export function ApplicationTable({ data }: ApplicationTableProps) {
                       size="icon"
                       className="h-8 w-8"
                       title="View Application"
+                      onClick={() => navigate("/admin/application-details")}
                     >
                       <Eye className="h-4 w-4 text-muted-foreground" />
                     </Button>

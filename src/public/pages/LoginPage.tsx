@@ -26,14 +26,13 @@ export const LoginPage = () => {
 
   return (
     <div className="container mx-auto p-6 mt-8 sm:mt-0 py-14 md:py-32">
-      {/* Main Login Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="flex flex-col items-center justify-center"
       >
-        <div className="card-box">
+        <div className="card-box max-w-120">
           {/* Header Section */}
           <div className="mb-8 flex flex-col items-center text-center">
             <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-brand-primary/10 text-brand-primary">

@@ -68,7 +68,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             }}
             className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
-            <Settings />
+            <Settings className="h-5 w-5" />
             Settings
           </button>
 
@@ -81,7 +81,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             }}
             className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
-            <LogOut />
+            <LogOut className="h-5 w-5" />
             Logout
           </button>
         </div>
