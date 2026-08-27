@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronLeft, Icon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import { RegistrationForm } from "../components/forms/registration/RegistrationForm";
 import { useEffect } from "react";

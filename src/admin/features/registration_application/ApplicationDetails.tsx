@@ -48,7 +48,7 @@ const DocumentLink = ({
 }) => {
   if (!file) return null;
   const fileName = file.name || "Document attached";
-
+  console.log(label);
   return (
     <div className="flex items-center justify-between p-3 bg-gray-50 border rounded-lg group hover:bg-brand-secondary/10 transition-colors">
       <div className="flex items-center space-x-3 overflow-hidden">

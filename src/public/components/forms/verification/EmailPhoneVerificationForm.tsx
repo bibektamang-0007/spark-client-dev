@@ -1,5 +1,4 @@
 import { useState, type Dispatch, type SetStateAction } from "react";
-import { Link } from "react-router";
 import type { RegistrationMode } from "./Verification.types";
 import { AnimatedDiv } from "@/shared/components/wrappers/AnimatedDiv";
 import { Button } from "@/components/ui/button";
