@@ -1,1 +1,13 @@
-{}
+{
+  "titles": {},
+  "labels": {
+    "settings": "Settings",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "new-registrations": "New Registration",
+    "user-management": "User Management"
+  },
+  "helper-text": {},
+  "errors": {},
+  "actions": {}
+}

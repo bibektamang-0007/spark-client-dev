@@ -1,14 +1,50 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
-import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
-import { Building2 } from "lucide-react"; // Replace with your actual Logo component
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building2 } from "lucide-react";
 import { LoginForm } from "../components/forms/login/LoginForm";
+import { useLocation, useNavigate } from "react-router";
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import type { RegistrationMode } from "../components/forms/verification/Verification.types";
+import { OtpVerificationForm } from "../components/forms/verification/OtpVerificationForm";
+import { EmailPhoneVerificationForm } from "../components/forms/verification/EmailPhoneVerificationForm";
 
-export const LoginPage = () => {
-  const { t } = useTranslation("public");
+export function LoginPage() {
+  const location = useLocation();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [otpSending, setOtpSending] = useState(false);
+  const [otpSubmitting, setOtpSubmitting] = useState(false);
+  const [showOtpValidation, setShowOtpValidation] = useState(false);
+  const [registrationMode, setRegistrationMode] =
+    useState<RegistrationMode>("email");
+  const [userContact, setUserContact] = useState("");
+  const [activeTab] = useState(() => {
+    return location.state === "register" ? "register" : "signin";
+  });
+
+  const handleSendOtp = (contact: string) => {
+    setUserContact(contact);
+    console.log("CONTACT", contact);
+    setOtpSending(true);
+    setTimeout(() => {
+      setOtpSending(false);
+      setShowOtpValidation(true);
+    }, 1000);
+  };
+  const handleSubmitOtp = (otp: string) => {
+    setOtpSubmitting(true);
+    console.log("String", otp);
+    setTimeout(() => {
+      setOtpSubmitting(false);
+      navigate("/registration-options", { replace: true });
+    }, 1000);
+  };
+  const handleChangeContact = (mode: RegistrationMode) => {
+    setRegistrationMode(mode);
+    setShowOtpValidation(false);
+  };
+  const handleResend = () => {};
 
   const handleLoginSubmit = async (identifier: string, pass: string) => {
     setIsSubmitting(true);
@@ -23,54 +59,93 @@ export const LoginPage = () => {
       setIsSubmitting(false);
     }
   };
-
   return (
-    <div className="container mx-auto p-6 mt-8 sm:mt-0 py-14 md:py-32">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        className="flex flex-col items-center justify-center"
-      >
-        <div className="card-box max-w-120">
-          {/* Header Section */}
-          <div className="mb-8 flex flex-col items-center text-center">
-            <div className="mb-4 grid h-12 w-12 place-items-center rounded-xl bg-brand-primary/10 text-brand-primary">
-              <Building2 className="h-6 w-6" />
+    <Card className="w-full max-w-md bg-white shadow-2xl shadow-brand-primary/10 border-0 rounded-3xl overflow-hidden">
+      <Tabs defaultValue={activeTab} className="w-full">
+        {/* Top Navigation Tabs */}
+        <TabsList className="w-full grid grid-cols-3 bg-brand-secondary/20 rounded-none">
+          <TabsTrigger
+            value="signin"
+            className="rounded-xl data-[state=active]:bg-brand-ternary data-[state=active]:text-brand-primary data-[state=active]:shadow-sm"
+          >
+            Sign In
+          </TabsTrigger>
+          <TabsTrigger
+            value="register"
+            className="rounded-xl text-gray-500 text-xs"
+          >
+            Register
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent
+          value="signin"
+          className="p-8 space-y-8 focus-visible:outline-none"
+        >
+          <div className="space-y-6">
+            <div
+              className="flex items-center space-x-2 text-brand-primary font-bold cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <Building2 className="w-6 h-6 text-brand-ternary" />
+              <span>
+                SIKKIM
+                <br />
+                <span className="text-xs font-normal tracking-widest text-gray-400">
+                  SPARK
+                </span>
+              </span>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              {t("titles.welcome-back", "Welcome back")}
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              {t(
-                "helper-text.login-prompt",
-                "Enter your credentials to access your account",
-              )}
-            </p>
+            <h2 className="text-2xl font-bold text-center text-gray-800">
+              Sign In
+            </h2>
           </div>
 
-          {/* Form Section */}
           <LoginForm onSubmit={handleLoginSubmit} isSubmitting={isSubmitting} />
-        </div>
-
-        {/* Footer Link */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-          className="mt-6 text-center text-sm text-muted-foreground"
+        </TabsContent>
+        <TabsContent
+          value="register"
+          className="p-8 space-y-8 focus-visible:outline-none"
         >
-          {t("labels.no-account", "Don't have an account?")}{" "}
-          <Link
-            to="/auth/verification"
-            className="font-medium text-brand-primary transition-colors hover:text-brand-dark hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded-sm"
-          >
-            {t("actions.create-account", "Create account")}
-          </Link>
-        </motion.div>
-      </motion.div>
-    </div>
+          <div className="space-y-6">
+            <div
+              className="flex items-center space-x-2 text-brand-primary font-bold cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <Building2 className="w-6 h-6 text-brand-ternary" />
+              <span>
+                SIKKIM
+                <br />
+                <span className="text-xs font-normal tracking-widest text-gray-400">
+                  SPARK
+                </span>
+              </span>
+            </div>
+            <h2 className="text-2xl font-bold text-center text-gray-800">
+              Register
+            </h2>
+          </div>
+          <AnimatePresence mode="wait">
+            {showOtpValidation ? (
+              <OtpVerificationForm
+                handleSubmit={handleSubmitOtp}
+                onResend={handleResend}
+                onChangeContact={handleChangeContact}
+                contactValue={userContact}
+                isSubmitting={otpSubmitting}
+                registrationMode={registrationMode}
+              />
+            ) : (
+              <EmailPhoneVerificationForm
+                handleSubmit={handleSendOtp}
+                isSubmitting={otpSending}
+                registrationMode={registrationMode}
+                setRegistrationMode={setRegistrationMode}
+              />
+            )}
+          </AnimatePresence>
+        </TabsContent>
+      </Tabs>
+    </Card>
   );
-};
-
-export default LoginPage;
+}

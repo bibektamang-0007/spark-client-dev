@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { Search, Download, Filter } from "lucide-react";
-
 import mockData from "@/admin/mockApplications.json";
 import { ApplicationTable, type Application } from "./ApplicationTable";
 import { Button } from "@/components/ui/button";

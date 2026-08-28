@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Building2,
   User,
@@ -6,15 +7,16 @@ import {
   Briefcase,
   Landmark,
   Users,
+  ArrowLeft,
+  CheckCircle2,
+  XCircle,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import type { ApplicationData } from "@/shared/types/ApplicantRegistration.types";
-
-// Reusing your interfaces...
-// import { ApplicationData, FounderDetails, MockFile } from './types';
+import { SparkSuccessModal } from "@/admin/components/modals/SparkSuccessModal";
 
 // ==========================================
 // UTILITY COMPONENTS
@@ -29,40 +31,34 @@ const DetailItem = ({
   value?: string;
   fullWidth?: boolean;
 }) => (
-  <div className={`space-y-1 ${fullWidth ? "col-span-full" : ""}`}>
-    <p className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+  <div className={`space-y-1.5 ${fullWidth ? "col-span-full" : ""}`}>
+    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
       {label}
     </p>
-    <p className="text-sm text-gray-900 font-medium bg-gray-50/50 p-2 rounded-md border border-gray-100">
+    <div className="text-sm text-gray-800 font-medium bg-linear-to-br from-white to-gray-50/50 p-3 rounded-xl border border-gray-100 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]">
       {value || <span className="text-gray-400 italic">Not provided</span>}
-    </p>
+    </div>
   </div>
 );
 
-const DocumentLink = ({
-  label,
-  file,
-}: {
-  label: string;
-  file?: File | any;
-}) => {
+const DocumentLink = ({ file }: { label: string; file?: File | any }) => {
   if (!file) return null;
   const fileName = file.name || "Document attached";
-  console.log(label);
+
   return (
-    <div className="flex items-center justify-between p-3 bg-gray-50 border rounded-lg group hover:bg-brand-secondary/10 transition-colors">
+    <div className="flex items-center justify-between p-3 bg-white border border-gray-100 rounded-xl group hover:border-brand-primary/30 hover:shadow-md hover:shadow-brand-primary/5 transition-all duration-300 cursor-pointer">
       <div className="flex items-center space-x-3 overflow-hidden">
-        <div className="p-2 bg-white rounded shadow-sm shrink-0">
+        <div className="p-2.5 bg-brand-primary/5 rounded-lg shrink-0 group-hover:bg-brand-primary/10 transition-colors">
           <FileText className="w-4 h-4 text-brand-primary" />
         </div>
-        <span className="text-sm font-medium text-gray-700 truncate group-hover:text-brand-primary transition-colors">
+        <span className="text-sm font-semibold text-gray-700 truncate group-hover:text-brand-primary transition-colors">
           {fileName}
         </span>
       </div>
       <Button
         variant="ghost"
         size="icon"
-        className="shrink-0 text-gray-400 hover:text-brand-primary"
+        className="shrink-0 text-gray-400 group-hover:text-brand-primary hover:bg-brand-primary/10 rounded-lg transition-colors"
       >
         <Download className="w-4 h-4" />
       </Button>
@@ -72,14 +68,17 @@ const DocumentLink = ({
 
 const StatusBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
-    Draft: "bg-gray-100 text-gray-700",
-    Submitted: "bg-blue-100 text-blue-700 hover:bg-blue-200",
+    Draft: "bg-gray-100 text-gray-600 border-gray-200",
+    Submitted: "bg-blue-50 text-blue-600 border-blue-200",
     "Under Review":
-      "bg-brand-ternary/20 text-yellow-700 hover:bg-brand-ternary/30",
-    Approved: "bg-green-100 text-green-700 hover:bg-green-200",
+      "bg-brand-ternary/10 text-amber-700 border-brand-ternary/30",
+    Approved: "bg-green-50 text-green-600 border-green-200",
   };
   return (
-    <Badge className={`${styles[status] || styles["Draft"]} shadow-none`}>
+    <Badge
+      variant="outline"
+      className={`${styles[status] || styles["Draft"]} font-bold px-3 py-1 shadow-sm`}
+    >
       {status}
     </Badge>
   );
@@ -90,63 +89,124 @@ const StatusBadge = ({ status }: { status: string }) => {
 // ==========================================
 
 export function ApplicantDetails({ data }: { data: ApplicationData }) {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   if (!data)
     return (
-      <div className="p-8 text-center text-gray-500">
+      <div className="p-8 text-center text-gray-500 font-medium">
         No application data found.
       </div>
     );
 
   return (
-    <>
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border">
-        <div>
-          <div className="flex items-center space-x-3 mb-1">
-            <h1 className="text-2xl font-bold text-gray-900">
-              {data.entityName}
-            </h1>
-            <StatusBadge status={data.status} />
-          </div>
-          <p className="text-sm text-gray-500 flex items-center space-x-2">
-            <span>
-              ID:{" "}
-              <span className="font-mono font-medium text-gray-700">
-                {data.applicationId}
+    <div className="relative">
+      {/* Floating Sticky Header */}
+      <SparkSuccessModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        sparkId="SC26GTK0001M"
+      />
+      <div
+        className={`sticky top-4 z-40 mb-8 transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center justify-between gap-4 rounded-2xl border ${
+          isScrolled
+            ? "bg-white/85 backdrop-blur-md shadow-xl shadow-brand-primary/5 py-4 px-6 border-white/20"
+            : "bg-white shadow-sm p-6 border-gray-100"
+        }`}
+      >
+        <div className="flex items-center gap-5">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full bg-gray-50 hover:bg-brand-secondary/20 hover:text-brand-primary transition-colors shrink-0"
+            onClick={() => window.history.back()}
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </Button>
+
+          <div>
+            <div className="flex items-center space-x-3 mb-1.5">
+              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+                {data.entityName}
+              </h1>
+              <StatusBadge status={data.status} />
+            </div>
+            <p className="text-sm font-medium text-gray-500 flex items-center space-x-2">
+              <span>
+                ID:{" "}
+                <span className="font-mono text-brand-primary">
+                  {data.applicationId}
+                </span>
               </span>
-            </span>
-            <span>•</span>
-            <span>
-              Submitted:{" "}
-              {data.submittedDate
-                ? new Date(data.submittedDate).toLocaleDateString()
-                : "N/A"}
-            </span>
-          </p>
+              <span className="text-gray-300">•</span>
+              <span>
+                Submitted:{" "}
+                {data.submittedDate
+                  ? new Date(data.submittedDate).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })
+                  : "N/A"}
+              </span>
+            </p>
+          </div>
         </div>
+
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-xl">
-            Reject / Query
-          </Button>
-          <Button className="rounded-xl bg-brand-primary hover:bg-brand-primary/90 text-white">
-            Approve Application
-          </Button>
+          {isApproved ? (
+            <div className="rounded-xl bg-green-200 text-green-600 shadow-md shadow-green-600/20 transition-all px-4 flex items-center py-2">
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Approved
+            </div>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                className="rounded-xl border-red-200 text-red-600 bg-red-50/50 hover:bg-red-100 hover:text-red-700 hover:border-red-300 shadow-sm transition-all"
+              >
+                <XCircle className="w-4 h-4 mr-2" />
+                Reject / Query
+              </Button>
+              <Button
+                className="rounded-xl bg-green-600 hover:bg-green-700 text-white shadow-md shadow-green-600/20 transition-all border border-green-700/50"
+                onClick={() => {
+                  setShowModal(true);
+                  setIsApproved(true);
+                }}
+              >
+                <CheckCircle2 className="w-4 h-4 mr-2" />
+                Approve Application
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
       {/* Layout Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* LEFT COLUMN: Data Heavy Content (Spans 2 columns on Desktop) */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* LEFT COLUMN: Data Heavy Content */}
+        <div className="lg:col-span-2 space-y-8">
           {/* 1. Basic & Entity Info */}
-          <Card className="shadow-sm border-0 ring-1 ring-gray-200">
-            <CardHeader className="bg-gray-50/50 border-b pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-gray-400" />
+          <Card className="shadow-lg shadow-gray-100/50 border-0 ring-1 ring-gray-100 rounded-2xl overflow-hidden relative pt-0">
+            <CardHeader className="bg-brand-primary/10 border-b border-gray-50 pt-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-3 text-gray-900">
+                <div className="p-2 bg-brand-primary/10 rounded-lg">
+                  <Building2 className="w-5 h-5 text-brand-primary" />
+                </div>
                 Entity & Applicant Profile
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CardContent className="p-6 bg-gray-50/30 grid grid-cols-1 md:grid-cols-2 gap-6">
               <DetailItem label="Applicant Name" value={data.applicantName} />
               <DetailItem label="Email Address" value={data.email} />
               <DetailItem label="Mobile Number" value={data.mobileNo} />
@@ -168,14 +228,16 @@ export function ApplicantDetails({ data }: { data: ApplicationData }) {
           </Card>
 
           {/* 2. Business Details */}
-          <Card className="shadow-sm border-0 ring-1 ring-gray-200">
-            <CardHeader className="bg-gray-50/50 border-b pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-gray-400" />
+          <Card className="shadow-lg shadow-gray-100/50 border-0 ring-1 ring-gray-100 rounded-2xl overflow-hidden relative pt-0">
+            <CardHeader className="bg-brand-ternary/10 border-b border-gray-50 pt-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-3 text-gray-900">
+                <div className="p-2 bg-brand-ternary/20 rounded-lg">
+                  <Briefcase className="w-5 h-5 text-amber-600" />
+                </div>
                 Business & Innovation Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <CardContent className="p-6 bg-gray-50/30 grid grid-cols-1 md:grid-cols-2 gap-6">
               <DetailItem label="Sector" value={data.sector} />
               <DetailItem label="Sub-Sector" value={data.subSector} />
               <DetailItem
@@ -202,25 +264,35 @@ export function ApplicantDetails({ data }: { data: ApplicationData }) {
           </Card>
 
           {/* 3. Founders List */}
-          <Card className="shadow-sm border-0 ring-1 ring-gray-200">
-            <CardHeader className="bg-gray-50/50 border-b pb-4">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Users className="w-5 h-5 text-gray-400" />
-                Founders & Directors ({data.founderDetails?.length || 0})
+          <Card className="shadow-lg shadow-gray-100/50 border-0 ring-1 ring-gray-100 rounded-2xl overflow-hidden relative pt-0">
+            <CardHeader className="bg-brand-secondary/10 border-b border-gray-50 pt-4">
+              <CardTitle className="text-lg font-bold flex items-center gap-3 text-gray-900">
+                <div className="p-2 bg-brand-secondary/30 rounded-lg">
+                  <Users className="w-5 h-5 text-purple-700" />
+                </div>
+                Founders & Directors
+                <Badge className="ml-2 bg-brand-secondary text-brand-primary hover:bg-brand-secondary/80">
+                  {data.founderDetails?.length || 0}
+                </Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent className="p-0 bg-gray-50/30">
               {data.founderDetails?.map((founder, idx) => (
                 <div
                   key={idx}
-                  className="p-6 border-b last:border-0 hover:bg-gray-50/30 transition-colors"
+                  className="p-6 border-b border-gray-100 last:border-0 hover:bg-white transition-colors"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                      <User className="w-4 h-4 text-brand-primary" />
+                  <div className="flex items-center justify-between mb-5">
+                    <h4 className="font-bold text-gray-900 flex items-center gap-3 text-lg">
+                      <div className="w-8 h-8 rounded-full bg-brand-primary/10 flex items-center justify-center">
+                        <User className="w-4 h-4 text-brand-primary" />
+                      </div>
                       {founder.founderName}
                     </h4>
-                    <Badge variant="outline" className="bg-white">
+                    <Badge
+                      variant="outline"
+                      className="bg-white font-semibold text-brand-primary border-brand-primary/20 px-3 py-1"
+                    >
                       {founder.founderRole}
                     </Badge>
                   </div>
@@ -245,21 +317,23 @@ export function ApplicantDetails({ data }: { data: ApplicationData }) {
           </Card>
         </div>
 
-        {/* RIGHT COLUMN: Sidebar (Spans 1 column on Desktop) */}
-        <div className="space-y-6">
+        {/* RIGHT COLUMN: Sidebar */}
+        <div className="space-y-8">
           {/* 4. Financials & Bank */}
-          <Card className="shadow-sm border-0 ring-1 ring-gray-200">
-            <CardHeader className="bg-gray-50/50 border-b pb-4">
-              <CardTitle className="text-md flex items-center gap-2">
-                <Landmark className="w-4 h-4 text-gray-400" />
+          <Card className="shadow-lg shadow-gray-100/50 border-0 ring-1 ring-gray-100 rounded-2xl overflow-hidden pt-0">
+            <CardHeader className="bg-linear-to-br from-gray-50 to-white border-b border-gray-100 pb-5 pt-6">
+              <CardTitle className="text-md font-bold flex items-center gap-3 text-gray-900">
+                <div className="p-2 bg-blue-50 rounded-lg">
+                  <Landmark className="w-4 h-4 text-blue-600" />
+                </div>
                 Banking & Finance
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-5 space-y-5">
+            <CardContent className="p-6 space-y-6">
               <DetailItem label="Bank Name" value={data.bankName} />
               <DetailItem label="Account No." value={data.accountNumber} />
               <DetailItem label="IFSC Code" value={data.ifscCode} />
-              <Separator />
+              <Separator className="bg-gray-100" />
               <DetailItem
                 label="Finance Received"
                 value={data.financeReceived}
@@ -274,14 +348,16 @@ export function ApplicantDetails({ data }: { data: ApplicationData }) {
           </Card>
 
           {/* 5. Uploaded Documents */}
-          <Card className="shadow-sm border-0 ring-1 ring-brand-primary/10 bg-brand-primary/5">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-md flex items-center gap-2 text-brand-primary">
-                <FileText className="w-4 h-4" />
+          <Card className="shadow-xl shadow-brand-primary/5 border-0 ring-1 ring-brand-primary/20 rounded-2xl overflow-hidden bg-linear-to-b from-brand-primary/2 to-transparent">
+            <CardHeader className="pb-5 pt-6 border-b border-brand-primary/10">
+              <CardTitle className="text-md font-bold flex items-center gap-3 text-brand-primary">
+                <div className="p-2 bg-brand-primary/10 rounded-lg">
+                  <FileText className="w-4 h-4" />
+                </div>
                 Uploaded Documents
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-5 pt-0 space-y-3">
+            <CardContent className="p-5 space-y-3">
               <DocumentLink
                 label="Registration Certificate"
                 file={data.registrationCertificate}
@@ -301,19 +377,20 @@ export function ApplicantDetails({ data }: { data: ApplicationData }) {
               />
               <DocumentLink label="Funding Proof" file={data.fundingProof} />
 
-              {/* Check if no documents were uploaded at all */}
               {!data.registrationCertificate &&
                 !data.moaDeed &&
                 !data.businessPlan && (
-                  <p className="text-sm text-gray-500 italic text-center py-4">
-                    No documents uploaded
-                  </p>
+                  <div className="py-8 text-center bg-white rounded-xl border border-dashed border-gray-200">
+                    <p className="text-sm font-medium text-gray-500">
+                      No documents uploaded
+                    </p>
+                  </div>
                 )}
             </CardContent>
           </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -321,9 +398,8 @@ export const ApplicantDetailsPage = () => {
   const mockApplicantData: ApplicationData = {
     applicationId: "APP-9A4B2C7",
     status: "Submitted",
-    submittedDate: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+    submittedDate: new Date(Date.now() - 86400000).toISOString(),
 
-    // Basic & Entity Info
     email: "founder@himalayanagri.com",
     entityName: "Himalayan AgriTech Solutions",
     applicantName: "Bibek Tamang",
@@ -333,7 +409,6 @@ export const ApplicantDetailsPage = () => {
     entityConstitution: "Private Limited Company",
     expectedRegistrationDate: "2026-08-27",
 
-    // Business Details
     sector: "Agriculture",
     subSector: "Agri-Tech",
     startupStage: "Early Traction",
@@ -352,7 +427,6 @@ export const ApplicantDetailsPage = () => {
     isIncubatorAssociated: "Yes",
     incubationCenter: "Advanced Technical Training Centre (ATTC), Bardang",
 
-    // Founders Array
     founderDetails: [
       {
         founderName: "Bibek Tamang",
@@ -363,7 +437,6 @@ export const ApplicantDetailsPage = () => {
         isCoiHolder: "Yes",
         equityShare: "65",
         founderResidenceAddress: "Nam Nang Road, Gangtok, Sikkim 737101",
-        // Optional docs omitted for brevity, UI will handle it gracefully
       },
       {
         founderName: "Jordan Smith",
@@ -377,7 +450,6 @@ export const ApplicantDetailsPage = () => {
       },
     ],
 
-    // Financials
     bankName: "State Bank of Sikkim",
     accountNumber: "0123456789098",
     ifscCode: "SBSK0000123",
@@ -385,7 +457,6 @@ export const ApplicantDetailsPage = () => {
     financeReceivedDetails:
       "Seed grant of ₹5,000,000 received from State Innovation Fund.",
 
-    // Mocked Documents (Using the MockFile interface structure)
     registrationCertificate: {
       name: "incorporation_cert_final.pdf",
       type: "application/pdf",
@@ -410,10 +481,9 @@ export const ApplicantDetailsPage = () => {
       size: 850000,
       base64: "data:application/pdf;base64,dummy...",
     },
-    // Left out capTable, patentDocument, etc., to see how the UI handles missing files
   };
   return (
-    <div className="min-h-screen bg-gray-50/50 p-6">
+    <div className="min-h-screen bg-[#fafafa] p-6 custom-scrollbar">
       <div className="mx-auto space-y-6">
         <ApplicantDetails data={mockApplicantData} />
       </div>

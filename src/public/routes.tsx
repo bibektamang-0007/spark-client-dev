@@ -2,8 +2,8 @@ import LandingPage from "./pages/LandingPage";
 import { RegistrationPage } from "./pages/RegistrationPage";
 import { RegistrationOptionsPage } from "./pages/RegistrationOptionsPage";
 import { PublicLayout } from "./layouts/PublicLayout";
-import { AuthLayoutv2 } from "./layouts/AuthLayoutv2";
-import { LoginPagev2 } from "./pages/LoginPagev2";
+import { AuthLayout } from "./layouts/AuthLayout";
+import { LoginPage } from "./pages/LoginPage";
 import { RegistrationSuccessfulPage } from "./pages/RegsitrationSuccessPage";
 import { RegistrationLayout } from "./layouts/RegistrationLayout";
 
@@ -15,8 +15,8 @@ export const publicRoutes = [
   },
   {
     path: "/auth",
-    element: <AuthLayoutv2 />,
-    children: [{ path: "/auth/loginv2", element: <LoginPagev2 /> }],
+    element: <AuthLayout />,
+    children: [{ path: "/auth/loginv2", element: <LoginPage /> }],
   },
   {
     path: "/",

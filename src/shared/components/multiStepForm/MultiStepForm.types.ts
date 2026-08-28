@@ -49,8 +49,6 @@ export interface FormConfig {
 }
 
 export interface MultiStepFormProps {
-  formTitle: string;
-  formSubTitle: string;
   formConfig: FormConfig[];
   onStepSubmit?: (stepData: any, stepIndex: number) => void;
   onFinalSubmit: (allData: any) => void;

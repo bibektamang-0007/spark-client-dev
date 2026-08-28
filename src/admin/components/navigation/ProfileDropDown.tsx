@@ -1,6 +1,7 @@
 import type { AuthUser } from "@/admin/types/Auth.types";
 import React, { useState, useEffect, useRef } from "react";
 import { Settings, LogOut } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ProfileDropdownProps {
   user: AuthUser | null;
@@ -13,6 +14,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
   onLogout,
   onProfileClick,
 }) => {
+  const { t } = useTranslation("admin");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -69,7 +71,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
             <Settings className="h-5 w-5" />
-            Settings
+            {t("labels.settings")}
           </button>
 
           <hr className="border-gray-100" />
@@ -82,7 +84,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
             className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
             <LogOut className="h-5 w-5" />
-            Logout
+            {t("labels.logout")}
           </button>
         </div>
       </div>

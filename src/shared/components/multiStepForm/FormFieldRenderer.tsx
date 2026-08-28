@@ -208,13 +208,12 @@ export function FormFieldRenderer({
               (opt) => opt.value === field.value,
             );
             if (!isValid && activeOptions.length > 0) {
-              // Delay the reset slightly to avoid React render cycle warnings
               setTimeout(() => field.onChange(""), 0);
             }
           }
 
           return (
-            <div className="flex flex-col space-y-2">
+            <div className="flex flex-col space-y-3">
               {/* Label and Optional Additional Notes */}
               <div>
                 <Label
@@ -335,12 +334,14 @@ export function FormFieldRenderer({
                       />
                     );
 
-                  case "dropdown":
+                  case "dropdown": {
+                    const selectedOption = activeOptions.find(
+                      (opt) => String(opt.value) === String(field.value),
+                    );
                     return (
                       <Select
                         value={field.value ?? ""}
                         onValueChange={field.onChange}
-                        // --- NEW: Disable if cascading but parent is not selected ---
                         disabled={
                           !!fieldConfig.cascadingOptions &&
                           !watchedCascadingParent
@@ -353,17 +354,17 @@ export function FormFieldRenderer({
                         >
                           <SelectValue
                             placeholder={
-                              // --- NEW: Dynamic placeholder for cascading fields ---
                               fieldConfig.cascadingOptions &&
                               !watchedCascadingParent
                                 ? `Select ${fieldConfig.cascadingOptions.dependsOnField} first`
                                 : (fieldConfig.placeholder ??
                                   `Select ${fieldConfig.label.toLowerCase()}`)
                             }
-                          />
+                          >
+                            {selectedOption ? selectedOption.label : undefined}
+                          </SelectValue>
                         </SelectTrigger>
                         <SelectContent alignItemWithTrigger={false}>
-                          {/* --- NEW: Use activeOptions instead of fieldConfig.options --- */}
                           {activeOptions.map((opt) => (
                             <SelectItem key={opt.value} value={opt.value}>
                               {opt.label}
@@ -372,7 +373,7 @@ export function FormFieldRenderer({
                         </SelectContent>
                       </Select>
                     );
-
+                  }
                   case "radio":
                     return (
                       <RadioGroup
@@ -380,7 +381,6 @@ export function FormFieldRenderer({
                         onValueChange={field.onChange}
                         className="flex flex-wrap gap-6 pt-1"
                       >
-                        {/* --- NEW: Use activeOptions instead of fieldConfig.options --- */}
                         {activeOptions.map((opt) => (
                           <div
                             key={opt.value}

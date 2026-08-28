@@ -1,12 +1,17 @@
-import { useState } from "react";
-import { Link } from "react-router";
-import { useTranslation } from "react-i18next";
-import { Eye, EyeOff, Lock, User } from "lucide-react";
-
-import { AnimatedDiv } from "@/shared/components/wrappers/AnimatedDiv";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { AnimatedDiv } from "@/shared/components/wrappers/AnimatedDiv";
+import {
+  Mail,
+  Lock,
+  Eye,
+  ShieldCheck,
+  CheckCircle2,
+  EyeOff,
+} from "lucide-react";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_REGEX = /^[0-9]{10}$/;
@@ -16,7 +21,7 @@ interface LoginFormProps {
   isSubmitting: boolean;
 }
 
-export const LoginForm = ({ onSubmit, isSubmitting }: LoginFormProps) => {
+export function LoginForm({ onSubmit, isSubmitting }: LoginFormProps) {
   const { t } = useTranslation("public");
 
   // State
@@ -45,14 +50,14 @@ export const LoginForm = ({ onSubmit, isSubmitting }: LoginFormProps) => {
 
   return (
     <AnimatedDiv animationKey="login-form">
-      <form onSubmit={handleFormSubmit} noValidate className="space-y-5">
-        {/* Email or Phone Input */}
+      <form className="space-y-6" onSubmit={handleFormSubmit}>
+        {/* Email Field with leading icon */}
         <div className="space-y-2">
-          <Label htmlFor="identifier" className="text-xs font-semibold">
+          <label className="text-sm font-semibold text-gray-700 ml-1">
             {t("labels.email-or-phone", "Email or Phone Number")}
-          </Label>
+          </label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <Input
               id="identifier"
               type="text"
@@ -66,64 +71,82 @@ export const LoginForm = ({ onSubmit, isSubmitting }: LoginFormProps) => {
                 "placeholders.identifier",
                 "name@startup.in or 9876543210",
               )}
-              className="pl-9 h-10 transition-all"
+              className="pl-10 h-12 bg-brand-secondary/30 rounded-xl transition-all"
               aria-invalid={showIdentifierError}
               autoFocus
             />
           </div>
-          {showIdentifierError && (
-            <p className="mt-1 text-xs font-medium text-destructive">
-              {t(
-                "errors.invalid-identifier",
-                "Please enter a valid email or 10-digit phone number.",
-              )}
-            </p>
-          )}
         </div>
 
-        {/* Password Input */}
+        {/* Password Field with leading and trailing icons */}
         <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-xs font-semibold">
-              {t("labels.password", "Password")}
-            </Label>
-            <Link
-              to="/forgot-password"
-              className="text-xs font-medium text-brand-primary transition-colors hover:text-brand-dark hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary rounded-sm"
-              tabIndex={-1} // Prevent tabbing to this before the password input itself
-            >
-              {t("actions.forgot-password", "Forgot password?")}
-            </Link>
-          </div>
+          <label className="text-sm font-semibold text-gray-700 ml-1">
+            {t("labels.password", "Password")}
+          </label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="pl-9 pr-10 h-10 transition-all"
+              className="pl-10 pr-10 h-12 bg-brand-secondary/30 rounded-xl font-mono text-lg tracking-widest"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-brand-primary transition-colors"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
-                <EyeOff className="h-4 w-4" />
+                <EyeOff className="h-5 w-5" />
               ) : (
-                <Eye className="h-4 w-4" />
+                <Eye className="h-5 w-5" />
               )}
             </button>
           </div>
         </div>
 
+        {/* reCAPTCHA Mockup */}
+        <div className="flex items-center justify-between p-3 border rounded-xl bg-gray-50/50">
+          <div className="flex items-center space-x-3">
+            <Checkbox
+              id="robot"
+              className="border-gray-300 w-6 h-6 rounded-md data-[state=checked]:bg-brand-primary data-[state=checked]:border-brand-primary"
+            />
+            <label
+              htmlFor="robot"
+              className="text-sm font-medium text-gray-700 cursor-pointer"
+            >
+              I'm not a robot
+            </label>
+          </div>
+          <div className="flex flex-col items-center justify-center">
+            <ShieldCheck className="w-8 h-8 text-blue-500 mb-1" />
+            <span className="text-[9px] text-gray-400">reCAPTCHA</span>
+          </div>
+        </div>
+
+        {/* Terms Checkbox */}
+        <div className="flex items-start space-x-3 pt-2">
+          <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
+          <p className="text-sm text-gray-600">
+            I agree to Spark Sikkim{" "}
+            <a
+              href="#"
+              className="text-brand-primary hover:underline font-medium"
+            >
+              Terms of use
+            </a>
+          </p>
+        </div>
+
+        {/* Submit Button */}
         <Button
           type="submit"
           disabled={isSubmitting || !isFormValid}
-          className="mt-2 w-full h-10 bg-brand-primary text-white hover:bg-brand-dark transition-colors font-semibold tracking-wide rounded-md shadow-sm"
+          className="w-full h-12 bg-linear-to-r from-brand-primary to-brand-primary/90 hover:from-brand-primary/90 hover:to-brand-primary text-white rounded-xl text-lg font-semibold shadow-lg shadow-brand-primary/30 transition-all active:scale-[0.98]"
         >
           {isSubmitting
             ? t("actions.signing-in", "Signing in...")
@@ -132,4 +155,4 @@ export const LoginForm = ({ onSubmit, isSubmitting }: LoginFormProps) => {
       </form>
     </AnimatedDiv>
   );
-};
+}

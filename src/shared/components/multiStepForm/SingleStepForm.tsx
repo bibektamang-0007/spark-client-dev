@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { FormFieldRenderer } from "./FormFieldRenderer";
 import type { SingleStepFormProps } from "./MultiStepForm.types";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export function SingleStepForm({
   config,
@@ -40,7 +41,7 @@ export function SingleStepForm({
       noValidate
     >
       <div className="flex flex-col grow md:border md:border-border md:p-6 rounded-md space-y-8">
-        <div className="grid grid-cols-12 gap-x-8 gap-y-6 items-start">
+        <div className="grid grid-cols-12 gap-x-8 gap-y-10 items-start">
           {standardFields.map((fieldConfig) => (
             <FormFieldRenderer
               key={fieldConfig.name}
@@ -71,6 +72,7 @@ export function SingleStepForm({
           disabled={stepIndex === 0}
           className="rounded-md"
         >
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1 hidden sm:block" />
           Back
         </Button>
         <Button

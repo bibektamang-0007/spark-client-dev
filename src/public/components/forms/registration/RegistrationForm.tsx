@@ -1,6 +1,5 @@
 import { registrationFromConfig } from "@/public/config/registrationFormConfig";
 import MultiStepForm from "@/shared/components/multiStepForm/MultiStepForm";
-import { useTranslation } from "react-i18next";
 import type { RegisterAsOption } from "./Registration.types";
 import { useNavigate } from "react-router";
 import { useState } from "react";
@@ -11,7 +10,6 @@ export const RegistrationForm = ({
 }: {
   registerAs: RegisterAsOption;
 }) => {
-  const { t } = useTranslation("public");
   const navigate = useNavigate();
   const [isSaving, setIsSaving] = useState(false);
 
@@ -43,8 +41,6 @@ export const RegistrationForm = ({
   };
   return (
     <MultiStepForm
-      formTitle={t("titles.registration-title")}
-      formSubTitle={t("titles.registration-subtitle")}
       formConfig={registrationFromConfig}
       onStepSubmit={handleStepSubmit}
       onFinalSubmit={handleFinalSubmit}

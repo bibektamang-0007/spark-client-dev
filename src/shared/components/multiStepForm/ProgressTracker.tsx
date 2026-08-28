@@ -1,0 +1,102 @@
+import { Fragment } from "react/jsx-runtime";
+import type { FormConfig } from "./MultiStepForm.types";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface ProgressTrackerProps {
+  formConfig: FormConfig[];
+  currentStep: number;
+}
+
+export const ProgressTracker = ({
+  formConfig,
+  currentStep,
+}: ProgressTrackerProps) => {
+  return (
+    <div className="my-8 mb-14 sm:mb-8 w-full mx-auto px-4">
+      <div className="flex items-center justify-between">
+        {formConfig.map((config, index) => {
+          const isCurrentOrDone = currentStep >= index;
+          const isDone = currentStep > index;
+
+          return (
+            <Fragment key={index}>
+              <div className="relative flex flex-col items-center sm:flex-row sm:gap-3 shrink-0">
+                <motion.div
+                  initial={false}
+                  animate={{
+                    borderColor: isCurrentOrDone
+                      ? "var(--brand-green, #4CAF50)"
+                      : "#94a3b8",
+                    color: isCurrentOrDone
+                      ? "var(--brand-green, #4CAF50)"
+                      : "#94a3b8",
+                    backgroundColor: isDone
+                      ? "var(--brand-green, #4CAF50)"
+                      : "transparent",
+                  }}
+                  transition={{ duration: 0.25 }}
+                  className={cn(
+                    "w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold border-[1.5px] transition-colors z-10",
+                    isCurrentOrDone
+                      ? "border-brand-primary text-brand-primary"
+                      : "border-slate-400 text-slate-400 font-medium",
+                  )}
+                >
+                  <AnimatePresence mode="wait">
+                    {isDone ? (
+                      <motion.div
+                        key="check"
+                        initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
+                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                        exit={{ opacity: 0, scale: 0.5, rotate: 45 }}
+                        transition={{ duration: 0.2 }}
+                        className="text-white"
+                      >
+                        <Check className="w-4 h-4 stroke-3" />
+                      </motion.div>
+                    ) : (
+                      <motion.span
+                        key="number"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.5 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        {index + 1}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                <span
+                  className={cn(
+                    "absolute top-full mt-2 left-1/2 -translate-x-1/2 text-center text-[10px] leading-tight",
+                    "md:relative md:top-auto md:mt-0 md:left-auto md:translate-x-0 md:text-left md:text-sm",
+                    "tracking-tight whitespace-nowrap transition-colors duration-200",
+                    isCurrentOrDone
+                      ? "text-brand-green font-bold"
+                      : "text-slate-400 font-medium",
+                  )}
+                >
+                  {config?.formHeading}
+                </span>
+              </div>
+
+              {index < formConfig.length - 1 && (
+                <div className="flex-1 mx-2 sm:mx-6 h-px bg-slate-300 relative overflow-hidden min-w-5">
+                  <motion.div
+                    className="h-full bg-brand-green origin-left"
+                    initial={false}
+                    animate={{ width: isDone ? "100%" : "0%" }}
+                    transition={{ duration: 0.35, ease: "easeInOut" }}
+                  />
+                </div>
+              )}
+            </Fragment>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

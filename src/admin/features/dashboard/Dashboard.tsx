@@ -13,7 +13,6 @@ import { StatCard } from "./StatCard";
 import { RecentRegistrations } from "../registration_application/RecentRegistrations";
 
 export default function Dashboard() {
-  // Helper to map entity ID to Lucide icon
   const getIconForEntity = (id: string) => {
     switch (id) {
       case "startups":
@@ -30,8 +29,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6 pt-6">
-      {/* Header Section */}
+    <div className="flex-1 space-y-6 p-2 md:p-6 pt-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-foreground">
@@ -52,7 +50,6 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* 4-Column Stats Grid */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {dashboardData.overview.map((stat) => (
           <StatCard

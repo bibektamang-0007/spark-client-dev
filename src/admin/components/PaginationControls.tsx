@@ -16,7 +16,6 @@ export function PaginationControls({
   totalItems,
   itemsPerPage,
 }: PaginationControlsProps) {
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   if (totalItems === 0) return null;
@@ -24,9 +23,8 @@ export function PaginationControls({
   return (
     <div className="flex items-center justify-between px-2 py-4">
       <div className="text-sm text-muted-foreground">
-        Showing <span className="font-medium text-foreground">{startItem}</span>{" "}
-        to <span className="font-medium text-foreground">{endItem}</span> of{" "}
-        <span className="font-medium text-foreground">{totalItems}</span>{" "}
+        Showing <span className="font-medium text-foreground">{endItem}</span>{" "}
+        of <span className="font-medium text-foreground">{totalItems}</span>{" "}
         results
       </div>
 
