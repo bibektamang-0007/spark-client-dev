@@ -9,15 +9,21 @@ import {
   SUB_SECTOR_MAP,
   YESNO,
 } from "../constants/formConstants";
+import { Building2, GraduationCap, Lightbulb, Rocket } from "lucide-react";
 
 export const registrationFromConfig: FormConfig[] = [
   {
     formHeading: "Applicant",
     children: [
       {
-        label: "Name of applicant",
+        label: "First Name",
         type: "text",
-        name: "applicantName",
+        name: "firstName",
+      },
+      {
+        label: "Last Name",
+        type: "text",
+        name: "lastName",
       },
       { label: "Mobile no", type: "mobile", name: "mobileNo" },
       {
@@ -41,7 +47,16 @@ export const registrationFromConfig: FormConfig[] = [
         type: "multiple",
         name: "founderDetails",
         multiGroupFields: [
-          { label: "Name", type: "text", name: "founderName" },
+          {
+            label: "First Name",
+            type: "text",
+            name: "firstName",
+          },
+          {
+            label: "Last Name",
+            type: "text",
+            name: "lastName",
+          },
           { label: "Role", type: "text", name: "founderRole" },
           { label: "Age", type: "text", name: "founderAge" },
           { label: "PAN no", type: "text", name: "founderPan" },
@@ -82,6 +97,11 @@ export const registrationFromConfig: FormConfig[] = [
   {
     formHeading: "Business",
     children: [
+      {
+        label: "Name of Business / Organization",
+        type: "text",
+        name: "organizationName",
+      },
       {
         label: "Do you have Startup India Recognition as a Startup",
         type: "radio",
@@ -284,3 +304,49 @@ export const registrationFromConfig: FormConfig[] = [
     ],
   },
 ];
+
+export const RegistrationHeaderConfig = {
+  startup: {
+    badge: "Startup Path",
+    title: "Register your Startup",
+    subtitle:
+      "Tell us about your venture to unlock funding, incubation, and growth.",
+    icon: Rocket,
+    iconBg: "#FDECEA",
+    iconColor: "#C64A3F",
+  },
+  enterprise: {
+    badge: "Enterprise Portal",
+    title: "Enterprise Onboarding",
+    subtitle: "Partner with us to discover and scale innovative solutions.",
+    icon: Building2,
+    iconBg: "#F6F2EC",
+    iconColor: "#423E39",
+  },
+  aspirant: {
+    badge: "Aspirant Journey",
+    title: "Begin Your Journey",
+    subtitle:
+      "Got an idea? Take the first step towards your entrepreneurial dream.",
+    icon: Lightbulb,
+    iconBg: "#E6F7EF",
+    iconColor: "#22946A",
+  },
+  mentor: {
+    badge: "Mentor Network",
+    title: "Join as a Mentor",
+    subtitle: "Share your expertise and guide the next generation of founders.",
+    icon: GraduationCap,
+    iconBg: "#EEE1F0",
+    iconColor: "#6B2D6F",
+  },
+  // Fallback for edge cases
+  default: {
+    badge: "Registration",
+    title: "Create your Account",
+    subtitle: "Fast, simple, and guided application process.",
+    icon: Rocket,
+    iconBg: "bg-gray-100",
+    iconColor: "text-gray-600",
+  },
+};

@@ -3,8 +3,8 @@ import { useLocation, useNavigate } from "react-router";
 import { RegistrationForm } from "../components/forms/registration/RegistrationForm";
 import { useEffect } from "react";
 import type { RegisterAsOption } from "../components/forms/registration/Registration.types";
-import { RegistrationHeaderConfig } from "../constants/pageConstants";
 import { Card } from "@/components/ui/card";
+import { RegistrationHeaderConfig } from "../config/registrationFormConfig";
 
 export const RegistrationPage = () => {
   const navigate = useNavigate();

@@ -1,0 +1,29 @@
+/* Custom CSS isolated specifically for complex gradients and D3 SVG patterns not native to Tailwind[cite: 1] */
+.map-stage {
+  perspective: 1000px;
+}
+.map-haze {
+  background:
+    radial-gradient(
+      40% 40% at 50% 42%,
+      rgba(213, 182, 214, 0.42) 0%,
+      rgba(213, 182, 214, 0) 72%
+    ),
+    radial-gradient(
+      34% 34% at 34% 70%,
+      rgba(242, 182, 81, 0.26) 0%,
+      rgba(242, 182, 81, 0) 74%
+    );
+}
+.map-dash {
+  stroke-dasharray: 3 5;
+}
+.mask-edges {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 10%,
+    black 90%,
+    transparent
+  );
+}
