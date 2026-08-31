@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import brandSrc from "@/shared/assets/logo-startup-sikkim.jpeg";
 
 export function Footer() {
   const { t } = useTranslation();
@@ -9,7 +10,7 @@ export function Footer() {
         <div className="flex flex-col gap-4 lg:col-span-1 md:col-span-2">
           <div className="inline-grid place-items-center px-3 py-1.5 bg-white rounded w-max">
             <img
-              src="/src/shared/assets/logo-startup-sikkim.jpeg"
+              src={brandSrc}
               alt="SPARK"
               className="h-10 mix-blend-multiply"
             />

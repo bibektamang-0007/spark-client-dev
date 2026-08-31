@@ -11,6 +11,11 @@ import {
   Building,
 } from "lucide-react";
 import type { NodeData } from "../components/sections/landingPage/Herosection/EcosystemNode";
+import ccctLogo from "@/shared/assets/ccct.png";
+import attcLogo from "@/shared/assets/attc.png";
+import deptLogo from "@/shared/assets/commerce-industries-dept.png";
+import inspiresLogo from "@/shared/assets/sikkim-inspires.png";
+import iimLogo from "@/shared/assets/iim-calcutta-innovation-park.png";
 
 export const NODES_DATA: NodeData[] = [
   {
@@ -230,30 +235,30 @@ export const SECTOR_DATA = (t: any) => [
     name: t("sectors.ccct.name", "CCCT Chisopani"),
     count: t("sectors.incubation", "Incubation centre"),
     color: "#2E3192",
-    logo: "/src/shared/assets/ccct.png",
+    logo: ccctLogo,
   },
   {
     name: t("sectors.attc.name", "ATTC Bardang"),
     count: t("sectors.incubation", "Incubation centre"),
     color: "#B4841B",
-    logo: "/src/shared/assets/attc.png",
+    logo: attcLogo,
   },
   {
     name: t("sectors.dept.name", "Commerce & Industries Dept."),
     count: t("sectors.govt", "Government of Sikkim"),
     color: "#4A154B",
-    logo: "/src/shared/assets/commerce-industries-dept.png",
+    logo: deptLogo,
   },
   {
     name: t("sectors.inspires.name", "Sikkim Inspires"),
     count: t("sectors.empower", "Employ · Empower · Enable"),
     color: "#ED6A5F",
-    logo: "/src/shared/assets/sikkim-inspires.png",
+    logo: inspiresLogo,
   },
   {
     name: t("sectors.iim.name", "IIM Calcutta Innovation Park"),
     count: t("sectors.partner", "Incubation partner"),
     color: "#1093C4",
-    logo: "/src/shared/assets/iim-calcutta-innovation-park.png",
+    logo: iimLogo,
   },
 ];
