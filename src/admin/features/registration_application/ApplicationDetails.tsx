@@ -114,7 +114,7 @@ export function ApplicantDetails({ data }: { data: ApplicationData }) {
       <SparkSuccessModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        sparkId="SC26GTK0001M"
+        sparkId="SS26GTK0001M"
       />
       <div
         className={`sticky top-4 z-40 mb-8 transition-all duration-300 ease-in-out flex flex-col lg:flex-row lg:items-center justify-between gap-4 rounded-2xl border ${
